@@ -62,6 +62,13 @@ cfont.say('by ' + info.nameown, {
 async function start(file) {
   if (isRunning) return;
   isRunning = true;
+
+  const opts = yargs(process.argv.slice(2)).exitProcess(false).parse();
+  if (opts["test"]) {
+    console.log(chalk.yellow('✅ Test mode enabled. Bot will not start.'));
+    process.exit(0);
+  }
+
   const args = [join(__dirname, file), ...process.argv.slice(2)];
   const p = spawn(process.argv[0], args, { stdio: ['inherit', 'inherit', 'inherit', 'ipc'] });
 
@@ -85,7 +92,6 @@ async function start(file) {
     if (code !== 0) start(file);
   });
 
-  const opts = yargs(process.argv.slice(2)).exitProcess(false).parse();
   if (!opts["test"] && !rl.listenerCount('line')) {
     rl.on("line", (line) => {
       p.emit("message", line.trim());
