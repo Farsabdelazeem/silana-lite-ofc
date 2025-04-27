@@ -1,26 +1,24 @@
 import './config.js';
 import './function/settings/settings.js';
 import { fetchLatestBaileysVersion } from '@adiwajshing/baileys';
-import cfont from "cfonts";
+import cfonts from 'cfonts';
 import { spawn } from 'child_process';
-import { createInterface } from "readline";
+import { createInterface } from 'readline';
 import { promises as fsPromises } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { sizeFormatter } from 'human-readable';
 import axios from 'axios';
-import cheerio from "cheerio";
 import os from 'os';
 import moment from 'moment-timezone';
 import fs from 'fs';
-import yargs from "yargs";
+import yargs from 'yargs';
 import express from 'express';
 import chalk from 'chalk';
 
 const app = express();
 const port = process.env.PORT || 7860;
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const time = moment().tz('Africa/Casablanca').format('HH:mm:ss');
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 let isRunning = false;
 
@@ -47,13 +45,15 @@ if (!fs.existsSync(folderPath)) {
 }
 
 // Show CFonts
-cfont.say(info.figlet, {
+const info = global.info || { figlet: 'Bot', nameown: 'Owner' };
+
+cfonts.say(info.figlet, {
   font: "simpleBlock",
   align: "center",
   gradient: ["yellow", "cyan", "red"],
   transitionGradient: true,
 });
-cfont.say('by ' + info.nameown, {
+cfonts.say('by ' + info.nameown, {
   font: "tiny",
   align: "center",
   colors: ["white"]
@@ -73,7 +73,7 @@ async function start(file) {
   const p = spawn(process.argv[0], args, { stdio: ['inherit', 'inherit', 'inherit', 'ipc'] });
 
   p.on("message", (data) => {
-    console.log(chalk.magenta("[✅ Accepted]", data));
+    console.log(chalk.magenta(`[✅ Accepted]`, data));
     switch (data) {
       case "reset":
         p.kill();
@@ -112,14 +112,14 @@ async function start(file) {
     const totalFoldersAndFiles = await getTotalFoldersAndFiles(pluginsFolder);
 
     console.table({
-      "⎔ Dashboard": " System ⎔",
+      "⎔ Dashboard": "System ⎔",
       "Name Bot": packageJsonObj.name,
       "Version": packageJsonObj.version,
       "Description": packageJsonObj.description,
-      "Os": os.type(),
+      "OS": os.type(),
       "Memory": `${freeRamInGB.toFixed(2)} / ${ramInGB.toFixed(2)} GB`,
       "IP": ip,
-      "Owner": global.info.nomerown,
+      "Owner": global.info?.nomerown || "Unknown",
       "Features": `${totalFoldersAndFiles.files} features`,
       "Creator": "NOUREDDINE"
     });
